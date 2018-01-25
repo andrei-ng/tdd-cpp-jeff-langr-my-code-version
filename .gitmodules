@@ -1,0 +1,3 @@
+[submodule "docker-env-submodule"]
+	path = docker-env-submodule
+	url = https://github.com/gandrein/docker-xenial-guis-cpp-tdd-dev-env
