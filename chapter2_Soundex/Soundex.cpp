@@ -34,8 +34,7 @@ std::string Soundex::EncodeToDigits(const std::string& word) const {
 
 void Soundex::EncodeHead(std::string& encoding, const std::string& word) const {
   /** encode first letter to be able to compare the second letter against it */
-  encoding += EncodeDigit(word.front());
-  //    EncodeLetter(encoding, word.front());
+  EncodeLetter(encoding, word.front());
 }
 
 void Soundex::EncodeTail(std::string& encoding, const std::string& word) const {
@@ -49,8 +48,10 @@ void Soundex::EncodeTail(std::string& encoding, const std::string& word) const {
 }
 
 void Soundex::EncodeLetter(std::string& encoding, const char& letter) const {
+  bool is_encoding_of_first_letter = (encoding.length() == 0);
   auto digit_encoding = EncodeDigit(letter);
-  if (IsValidEncoding(digit_encoding) && digit_encoding != GetLastEncodedDigit(encoding)) {
+  if ((is_encoding_of_first_letter) ||
+      (IsValidEncoding(digit_encoding) && digit_encoding != GetLastEncodedDigit(encoding))) {
     encoding += digit_encoding;
   }
 }
