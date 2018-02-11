@@ -8,7 +8,7 @@
 class InvalidUserException : public std::invalid_argument {
  public:
   InvalidUserException(const std::string& user)
-      : invalid_argument("Invalid argument 'user': " + user) {}
+      : invalid_argument("Invalid argument   'user': " + user) {}
 };
 
 class Tweet {
