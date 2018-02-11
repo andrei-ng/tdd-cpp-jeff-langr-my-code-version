@@ -16,16 +16,19 @@ class Soundex {
 
   std::string UpperFirst(const std::string& encoding) const;
 
-  std::string Head(const std::string& word) const;
+  std::string HeadLetter(const std::string& word) const;
 
-  std::string Tail(const std::string& word) const;
+  std::string TailLetters(const std::string& word) const;
 
   std::string EncodeToDigits(const std::string& word) const;
 
   std::string GetLastEncodedDigit(const std::string& encoding) const;
+
   bool IsCompleteEncoding(const std::string& encoding) const;
 
   bool IsValidEncoding(const std::string& encoding) const;
+
+  char LowerCase(char c) const;
 };
 
 #endif  // CPP_TDD_CHAPTER2_SOUNDEX_H_
