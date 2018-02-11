@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "gmock/gmock.h"
 
 #include "RetweetCollection.h"
@@ -29,22 +31,46 @@ TEST_F(ARetweetCollectionWithOneTweet, IsNoLongerEmpty) {
 TEST_F(ARetweetCollectionWithOneTweet, HasSizeOfOne) {
  ASSERT_THAT(collection.Size(), ::testing::Eq(1u));
 }
-
 // clang-format on
+
 TEST_F(ARetweetCollectionWithOneTweet, DecreasesSizeAfterRemovingTweet) {
   collection.RemoveTweet(*a_tweet_);
 
   ASSERT_THAT(collection, HasSize(0u));
 }
 
-TEST_F(ARetweetCollectionWithOneTweet, IgnoresDuplicateTweet) {
+TEST_F(ARetweetCollectionWithOneTweet, IgnoresDuplicateTweetAdded) {
   Tweet duplicate_tweet(*a_tweet_);
 
-  collection.AddTweet(*a_tweet_);
   collection.AddTweet(duplicate_tweet);
 
   ASSERT_THAT(collection.Size(), ::testing::Eq(1u));
 }
+
+class ARetweetCollectionWithOneTweet_SmartPtr : public testing::Test {
+ public:
+  RetweetCollection collection;
+  std::shared_ptr<Tweet> a_tweet_;
+
+ protected:
+  void SetUp() override {
+    a_tweet_ = std::shared_ptr<Tweet>(new Tweet("msg", "@user"));
+    collection.AddTweet(*a_tweet_);
+  }
+
+  /** No longer need to clean up a_tweet_ */
+  //  void TearDown() override {}
+};
+
+// clang-format off
+TEST_F(ARetweetCollectionWithOneTweet_SmartPtr, IsNoLongerEmpty) {
+ ASSERT_FALSE(collection.IsEmpty());
+}
+
+TEST_F(ARetweetCollectionWithOneTweet_SmartPtr, HasSizeOfOne) {
+ ASSERT_THAT(collection.Size(), ::testing::Eq(1u));
+}
+// clang-format on
 
 class ARetweetCollection : public testing::Test {
  public:
@@ -64,12 +90,13 @@ TEST_F(ARetweetCollection, IsEmptyWhenItsSizeIsZero) {
 }
 TEST_F(ARetweetCollection, IsNotEmptyWhenItsSizeIsNonZero) {
   collection.AddTweet(Tweet());
+
   ASSERT_THAT(collection.Size(), ::testing::Gt(0u));
   ASSERT_FALSE(collection.IsEmpty());
 }
 /** End special tests case */
 
-TEST_F(ARetweetCollection, IncrementsSizeWhenTweetAdded) {
+TEST_F(ARetweetCollection, IncrementsSizeWhenTweetsAdded) {
   Tweet first("msg1", "@user");
   collection.AddTweet(first);
   Tweet second("msg2", "@user");
