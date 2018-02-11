@@ -6,7 +6,10 @@ namespace stringutils {
 
 std::string HeadLetter(const std::string& word) { return word.substr(0, 1); }
 
-std::string TailLetters(const std::string& word) { return word.substr(1, std::string::npos); }
+std::string TailLetters(const std::string& word) {
+  if (word.length() == 0) return "";
+  return word.substr(1);
+}
 
 std::string ZeroPad(const std::string& word, const unsigned int target_length) {
   auto zeros_needed = target_length - word.length();

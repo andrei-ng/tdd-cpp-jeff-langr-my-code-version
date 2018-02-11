@@ -10,12 +10,16 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 include(gtest)
 
 set(sources 
-    main.cpp
-    string_utilities.cpp
-    char_utilities.cpp
-    Soundex.cpp
-    SoundexTest.cpp)
+  main.cpp
+  string_utilities.cpp
+  char_utilities.cpp
+  Soundex.cpp)
 
-add_executable(test_soundex ${sources})
+set(sources_tests
+  string_utilities_tests.cpp
+  char_utilities_tests.cpp
+  SoundexTest.cpp)
+
+add_executable(test_soundex ${sources} ${sources_tests})
 
 target_link_libraries(test_soundex gtest gmock_main pthread)
