@@ -29,7 +29,7 @@ else
     dHOME_FOLDER="/home/$docker_user"    
 fi
 
-SRC_CODE=$(pwd)/chapter2_Soundex
+SRC_CODE=$(pwd)/source_code
 
 # Run the container with NVIDIA Graphics acceleration, shared network interface, shared hostname, shared X11
 $(echo $docker_run_cmd) \
