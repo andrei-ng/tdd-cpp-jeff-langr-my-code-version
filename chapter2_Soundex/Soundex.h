@@ -12,6 +12,12 @@ class Soundex {
   std::string Encode(const std::string& word) const;
 
  private:
+  void EncodeHead(std::string& encoding, const std::string& word) const;
+
+  void EncodeTail(std::string& encoding, const std::string& word) const;
+
+  void EncodeLetter(std::string& encoding, const char& letter) const;
+
   std::string ZeroPad(const std::string& word) const;
 
   std::string UpperFirst(const std::string& encoding) const;

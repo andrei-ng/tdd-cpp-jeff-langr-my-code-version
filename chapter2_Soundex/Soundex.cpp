@@ -25,19 +25,34 @@ std::string Soundex::UpperFirst(const std::string& encoding) const {
 
 std::string Soundex::EncodeToDigits(const std::string& word) const {
   std::string encoding;
-  /** encode first letter to be able to compare against it */
-  encoding += EncodeDigit(word.front());
 
-  for (auto letter : TailLetters(word)) {
+  EncodeHead(encoding, word);
+  EncodeTail(encoding, word);
+
+  return encoding;
+}
+
+void Soundex::EncodeHead(std::string& encoding, const std::string& word) const {
+  /** encode first letter to be able to compare the second letter against it */
+  encoding += EncodeDigit(word.front());
+  //    EncodeLetter(encoding, word.front());
+}
+
+void Soundex::EncodeTail(std::string& encoding, const std::string& word) const {
+  std::string tail_letters = TailLetters(word);
+  for (auto letter : tail_letters) {
     if (IsCompleteEncoding(encoding)) {
       break;
     }
-    auto digit_encoding = EncodeDigit(letter);
-    if (IsValidEncoding(digit_encoding) && digit_encoding != GetLastEncodedDigit(encoding)) {
-      encoding += EncodeDigit(letter);
-    }
+    EncodeLetter(encoding, letter);
   }
-  return encoding;
+}
+
+void Soundex::EncodeLetter(std::string& encoding, const char& letter) const {
+  auto digit_encoding = EncodeDigit(letter);
+  if (IsValidEncoding(digit_encoding) && digit_encoding != GetLastEncodedDigit(encoding)) {
+    encoding += digit_encoding;
+  }
 }
 
 bool Soundex::IsCompleteEncoding(const std::string& encoding) const { return encoding.length() == kMaxCodeLength; }
