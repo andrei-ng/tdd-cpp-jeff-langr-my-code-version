@@ -16,7 +16,7 @@ class Soundex {
 
   void EncodeTail(std::string& encoding, const std::string& word) const;
 
-  void EncodeLetter(std::string& encoding, const char& letter) const;
+  void EncodeLetter(std::string& encoding, char letter, char last_letter) const;
 
   std::string ZeroPad(const std::string& word) const;
 
@@ -35,6 +35,8 @@ class Soundex {
   bool IsValidEncoding(const std::string& encoding) const;
 
   char LowerCase(char c) const;
+
+  bool IsVowel(char c) const;
 };
 
 #endif  // CPP_TDD_CHAPTER2_SOUNDEX_H_

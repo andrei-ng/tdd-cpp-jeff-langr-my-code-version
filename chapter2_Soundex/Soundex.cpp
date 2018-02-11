@@ -34,31 +34,39 @@ std::string Soundex::EncodeToDigits(const std::string& word) const {
 
 void Soundex::EncodeHead(std::string& encoding, const std::string& word) const {
   /** encode first letter to be able to compare the second letter against it */
-  EncodeLetter(encoding, word.front());
+  char previous_letter = '\0';  // no previous letter: empty character
+  EncodeLetter(encoding, word.front(), previous_letter);
 }
 
 void Soundex::EncodeTail(std::string& encoding, const std::string& word) const {
-  std::string tail_letters = TailLetters(word);
-  for (auto letter : tail_letters) {
+  for (auto i = 1u; i < word.length(); i++) {
     if (IsCompleteEncoding(encoding)) {
       break;
     }
-    EncodeLetter(encoding, letter);
-  }
-}
-
-void Soundex::EncodeLetter(std::string& encoding, const char& letter) const {
-  bool is_encoding_of_first_letter = (encoding.length() == 0);
-  auto digit_encoding = EncodeDigit(letter);
-  if ((is_encoding_of_first_letter) ||
-      (IsValidEncoding(digit_encoding) && digit_encoding != GetLastEncodedDigit(encoding))) {
-    encoding += digit_encoding;
+    EncodeLetter(encoding, word[i], word[i - 1]);
   }
 }
 
 bool Soundex::IsCompleteEncoding(const std::string& encoding) const { return encoding.length() == kMaxCodeLength; }
 
+void Soundex::EncodeLetter(std::string& encoding, char letter, char last_letter) const {
+  bool is_encoding_of_first_letter = (encoding.length() == 0);
+  auto digit_encoding = EncodeDigit(letter);
+  if ((is_encoding_of_first_letter) || (IsValidEncoding(digit_encoding) &&
+                                        (digit_encoding != GetLastEncodedDigit(encoding) || IsVowel(last_letter)))) {
+    encoding += digit_encoding;
+  }
+}
+
 bool Soundex::IsValidEncoding(const std::string& encoding) const { return encoding != kNotADigit; }
+
+std::string Soundex::GetLastEncodedDigit(const std::string& encoding) const {
+  if (encoding.empty()) {
+    return kNotADigit;
+  } else {
+    return std::string(1, encoding.back());
+  }
+}
 
 std::string Soundex::EncodeDigit(char letter) const {
   const std::map<char, std::string> encodings{{'b', "1"}, {'f', "1"}, {'p', "1"}, {'v', "1"}, {'c', "2"}, {'g', "2"},
@@ -75,10 +83,7 @@ std::string Soundex::EncodeDigit(char letter) const {
 
 char Soundex::LowerCase(char c) const { return static_cast<char>(std::tolower(c)); }
 
-std::string Soundex::GetLastEncodedDigit(const std::string& encoding) const {
-  if (encoding.empty()) {
-    return kNotADigit;
-  } else {
-    return std::string(1, encoding.back());
-  }
+bool Soundex::IsVowel(char c) const {
+  std::string soundex_vowels = std::string("aeiouy");
+  return soundex_vowels.find(LowerCase(c)) != std::string::npos;
 }

@@ -51,3 +51,7 @@ TEST_F(SoundexEncoding, IgnoresCaseWhenEncodingConsonants) {
 TEST_F(SoundexEncoding, CombinesDuplicateCodesWhen2ndLetterDuplicates1st) {
   ASSERT_THAT(soundex.Encode("Bbcd"), testing::Eq("B230"));
 }
+
+TEST_F(SoundexEncoding, DoesNotCombineDuplicateEncodingsSeparatedByVowels) {
+  ASSERT_THAT(soundex.Encode("Jbob"), testing::Eq("J110"));
+}
