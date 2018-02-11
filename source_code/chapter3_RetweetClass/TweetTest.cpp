@@ -1,6 +1,12 @@
 #include "gmock/gmock.h"
 #include "Tweet.h"
 
+TEST(ATweet, UserDefaultsToNullWhenNotProvided) {
+   Tweet tweet("msg");
+
+   ASSERT_THAT(tweet.GetUser(), ::testing::Eq("@null"));
+}
+
 TEST(ATweet, IsEqualToAnotherWhenMessageAndUserAreEqual) {
    Tweet a("msg", "@user");
    Tweet b("msg", "@user");
