@@ -7,12 +7,17 @@ MATCHER_P(HasSize, expected, "") { return arg.Size() == expected && arg.IsEmpty(
 class ARetweetCollectionWithOneTweet : public testing::Test {
  public:
   RetweetCollection collection;
-  Tweet a_tweet_;
+  Tweet* a_tweet_;
 
  protected:
   void SetUp() override {
-    a_tweet_ = Tweet("msg", "@user");
-    collection.AddTweet(a_tweet_);
+    a_tweet_ = new Tweet("msg", "@user");
+    collection.AddTweet(*a_tweet_);
+  }
+
+  void TearDown() override {
+    delete a_tweet_;
+    a_tweet_ = nullptr;
   }
 };
 
@@ -27,15 +32,15 @@ TEST_F(ARetweetCollectionWithOneTweet, HasSizeOfOne) {
 
 // clang-format on
 TEST_F(ARetweetCollectionWithOneTweet, DecreasesSizeAfterRemovingTweet) {
-  collection.RemoveTweet(a_tweet_);
+  collection.RemoveTweet(*a_tweet_);
 
   ASSERT_THAT(collection, HasSize(0u));
 }
 
 TEST_F(ARetweetCollectionWithOneTweet, IgnoresDuplicateTweet) {
-  Tweet duplicate_tweet(a_tweet_);
+  Tweet duplicate_tweet(*a_tweet_);
 
-  collection.AddTweet(a_tweet_);
+  collection.AddTweet(*a_tweet_);
   collection.AddTweet(duplicate_tweet);
 
   ASSERT_THAT(collection.Size(), ::testing::Eq(1u));
