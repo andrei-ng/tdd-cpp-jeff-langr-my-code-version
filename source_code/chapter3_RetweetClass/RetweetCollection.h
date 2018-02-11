@@ -1,18 +1,21 @@
 #ifndef TDD_CH3_RETWEETCOLLECTION_H_
 #define TDD_CH3_RETWEETCOLLECTION_H_
 
+#include <iostream>
+#include <set>
+
 #include "Tweet.h"
 
 class RetweetCollection {
  public:
-  RetweetCollection() : size_(0) {}
   bool IsEmpty() const { return 0 == Size(); }
 
-  unsigned int Size() const { return size_; }
+  unsigned long Size() const { return tweets_.size(); }
 
-  void AddTweet(const Tweet & /*tweet*/) { size_ += 1; }
+  void AddTweet(const Tweet& tweet) { tweets_.insert(tweet); }
+  void RemoveTweet(const Tweet& tweet) { tweets_.erase(tweets_.find(tweet)); }
 
  private:
-  unsigned int size_;
+  std::set<Tweet> tweets_;
 };
 #endif  // TDD_CH3_RETWEETCOLLECTION_H_

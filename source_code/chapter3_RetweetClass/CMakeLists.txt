@@ -11,6 +11,7 @@ include(gtest)
 
 set(sources 
   main.cpp
+  Tweet.cpp
   RetweetCollection.cpp
   RetweetCollectionTest.cpp)
 
