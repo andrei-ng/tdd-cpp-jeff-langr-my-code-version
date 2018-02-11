@@ -11,6 +11,7 @@ include(gtest)
 
 set(sources 
     main.cpp
+    Soundex.cpp
     SoundexTest.cpp)
 add_executable(test_soundex ${sources})
 
