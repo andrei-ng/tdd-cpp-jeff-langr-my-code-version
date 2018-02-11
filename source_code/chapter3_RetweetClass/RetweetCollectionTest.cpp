@@ -7,22 +7,28 @@ class ARetweetCollection : public testing::Test {
   RetweetCollection collection;
 };
 
+class ARetweetCollectionWithOneTweet : public testing::Test {
+ public:
+  RetweetCollection collection;
+protected:
+  void SetUp() override {
+    collection.AddTweet(Tweet());
+  }
+};
+
 MATCHER_P(HasSize, expected, "") { return arg.Size() == expected && arg.IsEmpty() == (0 == expected); }
 
 TEST_F(ARetweetCollection, IsEmptyWhenCreated) { ASSERT_TRUE(collection.IsEmpty()); }
 
-TEST_F(ARetweetCollection, IsNoLongerEmptyAfterTweetAdded) {
-  collection.AddTweet(Tweet());
+TEST_F(ARetweetCollectionWithOneTweet, IsNoLongerEmpty) {
   ASSERT_FALSE(collection.IsEmpty());
 }
 
-TEST_F(ARetweetCollection, HasSizeOfOneAfterTweetAdded) {
-  collection.AddTweet(Tweet());
+TEST_F(ARetweetCollectionWithOneTweet, HasSizeOfOne) {
   ASSERT_THAT(collection.Size(), ::testing::Eq(1u));
 }
 
-TEST_F(ARetweetCollection, DecreasesSizeAfterRemovingTweet) {
-  collection.AddTweet(Tweet());
+TEST_F(ARetweetCollectionWithOneTweet, DecreasesSizeAfterRemovingTweet) {
   collection.RemoveTweet(Tweet());
 
   ASSERT_THAT(collection, HasSize(0u));
@@ -42,6 +48,7 @@ TEST_F(ARetweetCollection, IsNotEmptyWhenItsSizeIsNonZero) {
   ASSERT_THAT(collection.Size(), ::testing::Gt(0u));
   ASSERT_FALSE(collection.IsEmpty());
 }
+/** End special tests case */
 
 TEST_F(ARetweetCollection, IgnoresDuplicateTweetAdded) {
   Tweet a_tweet("msg", "@user");
