@@ -13,6 +13,7 @@ set(sources
   main.cpp
   Tweet.cpp
   RetweetCollection.cpp
+  TweetTest.cpp
   RetweetCollectionTest.cpp)
 
 set(UNIT_TEST test_retweetclass)

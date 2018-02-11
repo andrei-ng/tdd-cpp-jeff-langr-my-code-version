@@ -5,11 +5,16 @@
 
 class Tweet {
  public:
-  Tweet(const std::string& message = "", const std::string& user = "") : message_(message), user_(user) {}
+  static const std::string NULL_USER;
 
-  /** Don't seem to be needed by the <set> template class on Tweet type. Only the less operator is required */
-  //  bool operator==(const Tweet& rhs) const { return (message_ == rhs.message_ && user_ == rhs.user_); }
-  //  bool operator!=(const Tweet& rhs) const { return !(*this == rhs); }
+  Tweet(const std::string& message = "", const std::string& user = Tweet::NULL_USER) : message_(message), user_(user) {}
+
+  bool IsValidUser(const std::string& user) const { return '@' == user[0]; }
+
+  std::string GetUser() const { return user_; }
+
+  bool operator==(const Tweet& rhs) const { return (message_ == rhs.message_ && user_ == rhs.user_); }
+  bool operator!=(const Tweet& rhs) const { return !(*this == rhs); }
 
   bool operator<(const Tweet& rhs) const {
     if (user_ == rhs.user_) {
