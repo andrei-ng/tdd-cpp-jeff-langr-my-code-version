@@ -1,13 +1,21 @@
 #ifndef TDD_CH3_TWEET_H_
 #define TDD_CH3_TWEET_H_
 
+#include <stdexcept>
 #include <string>
+
+class InvalidUserException : public std::invalid_argument {
+ public:
+  InvalidUserException() : invalid_argument("Exception msg for invalid argument (in this case user)") {}
+};
 
 class Tweet {
  public:
   static const std::string NULL_USER;
 
-  Tweet(const std::string& message = "", const std::string& user = Tweet::NULL_USER) : message_(message), user_(user) {}
+  Tweet(const std::string& message = "", const std::string& user = Tweet::NULL_USER) : message_(message), user_(user) {
+    if (!IsValidUser(user_)) throw InvalidUserException();
+  }
 
   bool IsValidUser(const std::string& user) const { return '@' == user[0]; }
 

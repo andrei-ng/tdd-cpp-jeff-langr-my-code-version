@@ -22,7 +22,7 @@ add_executable(${UNIT_TEST} ${sources})
 
 target_link_libraries(${UNIT_TEST} gtest gmock_main pthread)
 
-# Run tests as part of the build step
+## Run tests as part of the build step
 add_custom_command(
      TARGET ${UNIT_TEST}
      COMMENT "Runing tests"

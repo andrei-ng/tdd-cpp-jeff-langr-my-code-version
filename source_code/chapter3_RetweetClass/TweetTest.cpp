@@ -48,3 +48,28 @@ TEST(ATweet, CanBeCopyConstructed) {
 
    ASSERT_THAT(a, ::testing::Eq(b));
 }
+
+class ATweetWithInvalidUser : public testing::Test {
+protected:
+  void SetUp() override {
+    invalid_user = std::string("notStartingWith@");
+  }
+  std::string invalid_user;
+};
+
+TEST_F(ATweetWithInvalidUser, RequiresUserToStartWithAnAtSign) {
+   ASSERT_ANY_THROW(Tweet tweet("msg", invalid_user));
+}
+
+TEST_F(ATweetWithInvalidUser, RequiresUserToStartWithAnAtSignToBeValidUser) {
+   ASSERT_THROW(Tweet tweet("msg", invalid_user), InvalidUserException);
+}
+
+TEST_F(ATweetWithInvalidUser, RequiresUserNameToStartWithAnAtSign_v3) {
+   std::string invalidUser("notStartingWith@");
+   try {
+      Tweet tweet("msg", invalidUser);
+      FAIL();
+   }
+   catch (const InvalidUserException& /*expected*/) {}
+}
