@@ -37,9 +37,15 @@ class HttpStub : public Http {
   }
 
   void Verify(const std::string& url) const {
-    auto expected_args("lat=" + APlaceDescriptionService::latitude + "&lon=" + APlaceDescriptionService::longitude);
+    /** Current vesion of MAPQUEST API requires user to provide an API KEY.
+      * However, cannot include my own key after "?key=" since this is private.
+      */
+    std::string url_start("http://open.mapquestapi.com/nominatim/v1/reverse?key=");
+    auto url_end("&format=json&lat=" + APlaceDescriptionService::latitude + "&lon=" +
+                 APlaceDescriptionService::longitude);
 
-    ASSERT_THAT(url, EndsWith(expected_args));
+    ASSERT_THAT(url, StartsWith(url_start));
+    ASSERT_THAT(url, EndsWith(url_end));
   }
 };
 
