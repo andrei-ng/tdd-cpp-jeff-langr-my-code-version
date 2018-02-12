@@ -11,14 +11,14 @@
 
 #include <string>
 
-Address AddressExtractor::AddressFrom(const  std::string& json) const {
+Address AddressExtractor::AddressFrom(const std::string& json) const {
   Address address;
   Json::Value json_address{JsonAddressFrom(json)};
   Populate(address, json_address);
   return address;
 }
 
-Json::Value AddressExtractor::JsonAddressFrom(const  std::string& json) const {
+Json::Value AddressExtractor::JsonAddressFrom(const std::string& json) const {
   auto location_data = Parse(json);
   return location_data.get("address", Value::null);
 }
@@ -30,7 +30,7 @@ void AddressExtractor::Populate(Address& address, Value& json_address) const {
   address.country = GetString(json_address, "country");
 }
 
-Json::Value AddressExtractor::Parse(const  std::string& json) const {
+Json::Value AddressExtractor::Parse(const std::string& json) const {
   Value root;
   /** Reader is deprecated, but did not find a quick example of how to use CharReader*/
   Json::Reader reader;
@@ -38,4 +38,6 @@ Json::Value AddressExtractor::Parse(const  std::string& json) const {
   return root;
 }
 
-std::string AddressExtractor::GetString(Value& result, const  std::string& name) const { return result.get(name, "").asString(); }
+std::string AddressExtractor::GetString(Value& result, const std::string& name) const {
+  return result.get(name, "").asString();
+}

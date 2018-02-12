@@ -18,8 +18,8 @@ class PlaceDescriptionService {
  public:
   PlaceDescriptionService(Http* http) : http_(http) {}
   std::string LocationSummary(const std::string& latitude, const std::string& longitude) {
-    auto requested_url = "";
-    auto json_response = http_->get(requested_url);
+    auto requested_url = "lat=" + latitude + "&lon=" + longitude;
+    auto json_response = http_->Get(requested_url);
 
     AddressExtractor extractor;
     auto address = extractor.AddressFrom(json_response);
