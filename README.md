@@ -1,4 +1,4 @@
-## Purpose
+## Overview
 
 This repository contains code based on the examples given in the book [Modern C++ Programming with Test-Driven Development (Code Better, Sleep Better) by Jeff Langr](https://pragprog.com/book/lotdd/modern-c-programming-with-test-driven-development). The code is re-written as an excercise while reading the book, therefore the code is in no way my own and any usage of it falls under the original Copyright and Licensing as explained in the [original source](https://pragprog.com/titles/lotdd/source_code) files.
 ```
@@ -14,7 +14,7 @@ This repository contains code based on the examples given in the book [Modern C+
 
 The code for each example (chapter) is bundled in a separate CMake projects. Each re-worked solution is written in an attempt to follow the book's advice while also trying to follow the [Google C++ Coding Style](https://google.github.io/styleguide/cppguide.html). 
 
-To run the code a docker image with the required development environment is needed. My custom development environment is available in [this repository](https://github.com/gandrein/docker-xenial-guis-cpp-tdd-dev-env) which is also included here as a `git-submodule` in the [docker-env-submodule](./docker-env-submodule) folder. 
+To run this source code all the book's dependencies described in Chapter 1 need to be met. A docker image with these dependencies can be created using the files found in the [docker](./docker) folder. This folder contains files taken from [this repository](https://github.com/gandrein/docker-xenial-guis-cpp-tdd-dev-env) and further adapted. Please have a look at that repository's [README](https://github.com/gandrein/docker-xenial-guis-cpp-tdd-dev-env/blob/master/README.md) for more details.
 
 ## Requirements
 
@@ -28,6 +28,10 @@ To run the code a docker image with the required development environment is need
 
 Read this [README.md](https://github.com/gandrein/docker-xenial-guis-cpp-tdd-dev-env/blob/master/README.md) to check how to make use of the above docker image.
 
+Compared to that repository, the docker image created with the files in the [docker](./docker) folder, incorporates the additional packages required by the examples of Chapters 5 ([Json](https://github.com/open-source-parsers/jsoncpp), [Curl](https://curl.haxx.se/libcurl/c/example.html)) and Chapter 7 ([boost](http://www.boost.org/)).
+
+
+
 ## Book Source Code
 
 If you wish to download the source code as presented in the book, download it from the original soruce [The Pragmatic Bookshelf source code](https://pragprog.com/titles/lotdd/source_code). 
@@ -36,11 +40,11 @@ Note that the original code won't compile on my custom docker image due to the w
 
 ### The `./run_docker.sh` script
 
-The [./run_docker.sh](./run_docker.sh) script is a modified version of the one available in the git-submodule which mounts the source code of this repository inside your docker container.
+The [./run_docker.sh](./docker/run_docker.sh) script is a modified version of the one available in [this repository](https://github.com/gandrein/docker-xenial-guis-cpp-tdd-dev-env) which mounts the source code folder inside your docker container.
 
 ### Bash auto-completion for `./run_docker.sh`
 
-When using `./run_docker.sh` in a bash shell to launch the container, source the [bash_docker_images_completion.sh](./docker-env-submodule/docker/configs/bash_docker_images_completion.sh) script available in the `docker-env-submodule/docker/configs` folder. Now you should be able to get the names of the available docker images on your system whenever you type 
+When using `./run_docker.sh` in a bash shell to launch the container, source the [bash_docker_images_completion.sh](./docker/configs/bash_docker_images_completion.sh) script available in the `docker/configs` folder. Now you should be able to get the names of the available docker images on your system whenever you type 
 ```
 ./run_docker.sh <TAB><TAB>
 ```
