@@ -15,9 +15,13 @@
 
 using namespace testing;
 
-class AWavReader : public ::testing::Test {};
+class WavReader_WriteSamples : public ::testing::Test {
+ public:
+  WavReader reader{"", ""};
+  std::ostringstream out;
+};
 
-TEST_F(AWavReader, FileHasExtension) {
+TEST_F(WavReader_WriteSamples, FileHasExtension) {
   std::string s{"a.bcd"};
   ASSERT_TRUE(!HasExtension(s, "xxxx"));
   ASSERT_TRUE(HasExtension(s, "bcd"));
