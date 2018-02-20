@@ -13,7 +13,7 @@ ARG shell=/bin/bash
 RUN apt-get update && apt-get install -y \
  software-properties-common \
  lsb-release mesa-utils \
- x11-apps locales\
+ x11-apps locales libcanberra-gtk* \
  gdb valgrind \
  build-essential cmake \
  git subversion \
@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y \
  sudo htop ssh zsh screen tree \
  astyle clang-format \
  libjsoncpp1 libjsoncpp-dev \
- libcanberra-gtk* \
+ librlog-dev libboost1.58-all-dev \
  && add-apt-repository ppa:nholthaus/gtest-runner -y \
  && apt-get update && apt-get install gtest-runner libqt5opengl5 libqt5xml5 -y \
  && sudo locale-gen en_US.UTF-8 \

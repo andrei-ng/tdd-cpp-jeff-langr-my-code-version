@@ -1,5 +1,5 @@
 # Based on the generic image
-FROM codookie/xenial:cpp-tdd-env
+FROM codookie/xenial:cpp-tdd-book-updated-libs
 
 MAINTAINER Andrei Gherghescu <gandrein@gmail.com>
 
