@@ -29,8 +29,10 @@ class WavReader {
   void ListAll() const;
   void PublishSnippets();
 
-  void WriteSamples(std::ostream* out, char* data, const uint32_t startingSample, const uint32_t samplesToWrite,
-                    const uint32_t bytesPerSample);
+  void WriteSamples(std::ostream* out, char* data, const uint32_t starting_sample, const uint32_t samples_to_write,
+                    const uint32_t bytes_per_sample, const u_int32_t channels = 1);
+
+  uint32_t DataLength(const uint32_t bytes_per_sample, const uint32_t samples, const uint32_t channels) const;
 
  private:
   rlog::StdioNode log{STDERR_FILENO};
@@ -39,7 +41,7 @@ class WavReader {
   void SeekToEndOfHeader(std::ifstream& file, int headerLength);
   std::string ToString(int8_t* c, unsigned int size);
 
-  rlog::RLogChannel* channel;
+  rlog::RLogChannel* rlog_channel_;
 
   std::string source_;
   std::string dest_;
