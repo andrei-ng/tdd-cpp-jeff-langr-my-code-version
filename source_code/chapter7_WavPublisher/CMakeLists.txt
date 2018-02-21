@@ -29,8 +29,8 @@ endif()
 
 add_subdirectory(rlog_stubs)
 
-set(sources WavReader.cpp WavDescriptor.cpp)
-set(testSources WavReaderTest.cpp)
+set(sources StreamUtil.cpp FileUtil.cpp WavReader.cpp WavDescriptor.cpp)
+set(testSources StreamUtilTest.cpp FileUtilTest.cpp WavReaderTest.cpp)
 
 add_executable(utest testmain.cpp ${testSources} ${sources})
 add_executable(SnippetPublisher main.cpp ${sources})

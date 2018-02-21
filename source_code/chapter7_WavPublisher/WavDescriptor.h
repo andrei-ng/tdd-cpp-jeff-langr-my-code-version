@@ -6,8 +6,8 @@
  * We make no guarantees that this code is fit for any purpose.
  * Visit http://www.pragmaticprogrammer.com/titles/lotdd for more book information.
 ***/
-#ifndef WavDescriptor_h
-#define WavDescriptor_h
+#ifndef WAB_DESCRIPTOR_H_
+#define WAB_DESCRIPTOR_H_
 
 #include <cstdint>
 #include <cstring>
