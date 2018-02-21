@@ -29,7 +29,7 @@ class WavReader {
   void ListAll() const;
   void PublishSnippets();
 
-  void WriteSamples(std::ofstream& out, char* data, const uint32_t startingSample, const uint32_t samplesToWrite,
+  void WriteSamples(std::ostream* out, char* data, const uint32_t startingSample, const uint32_t samplesToWrite,
                     const uint32_t bytesPerSample);
 
  private:

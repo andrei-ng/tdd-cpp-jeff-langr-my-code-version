@@ -187,20 +187,20 @@ void WavReader::Open(const std::string& name, bool trace) {
   out.write(reinterpret_cast<char*>(&dataChunk), sizeof(DataChunk));
 
   uint32_t startingSample{totalSeconds >= 10 ? 10 * formatSubchunk.samplesPerSecond : 0};
-  WriteSamples(out, data, startingSample, samplesToWrite, bytesPerSample);
+  WriteSamples(&out, data, startingSample, samplesToWrite, bytesPerSample);
 
   rLog(channel, "completed writing %s", name.c_str());
   descriptor_->add(dest_, name, totalSeconds, formatSubchunk.samplesPerSecond, formatSubchunk.channels);
   out.close();
 }
 
-void WavReader::WriteSamples(std::ofstream& out, char* data, const uint32_t startingSample,
+void WavReader::WriteSamples(std::ostream* out, char* data, const uint32_t startingSample,
                              const uint32_t samplesToWrite, const uint32_t bytesPerSample) {
   rLog(channel, "writing %u samples", samplesToWrite);
   for (auto sample = startingSample; sample < startingSample + samplesToWrite; sample++) {
     auto byteOffsetForSample = sample * bytesPerSample;
     for (uint32_t byte{0}; byte < bytesPerSample; byte++) {
-      out.put(data[byteOffsetForSample + byte]);
+      out->put(data[byteOffsetForSample + byte]);
     }
   }
 }

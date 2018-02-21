@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 2.8.2)
 
 project(Chapter7_WavPublisher)
-
-add_definitions(-std=c++0x)
+add_definitions(-std=c++11)
 set(CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -DRLOG_COMPONENT=debug -Wall")
 
 # Add CMake Modules to path
@@ -28,6 +27,8 @@ if (rlog_LIBRARY)
   message("\tLIBRARIES: ${rlog_LIBRARY}")
 endif()
 
+add_subdirectory(rlog_stubs)
+
 set(sources WavReader.cpp WavDescriptor.cpp)
 set(testSources WavReaderTest.cpp)
 
@@ -36,13 +37,13 @@ add_executable(SnippetPublisher main.cpp ${sources})
 
 target_link_libraries(utest
   ${Boost_LIBRARIES}
-  ${rlog_LIBRARY}
   gtest gmock_main
   pthread
-  rlog)
+  rlog_stub
+  )
 
 target_link_libraries(SnippetPublisher
   ${Boost_LIBRARIES}
   ${rlog_LIBRARY}
   pthread
-  rlog)
+  )
