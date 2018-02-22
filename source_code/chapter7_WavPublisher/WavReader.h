@@ -19,6 +19,10 @@
 
 bool HasExtension(const std::string& text, const std::string& substring);
 
+struct FormatSubchunkHeader;
+struct FormatSubchunk;
+struct DataChunk;
+
 class WavReader {
  public:
   WavReader(const std::string& source, const std::string& dest);
@@ -29,10 +33,20 @@ class WavReader {
   void ListAll() const;
   void PublishSnippets();
 
-  void WriteSamples(std::ostream* out, char* data, const uint32_t starting_sample, const uint32_t samples_to_write,
-                    const uint32_t bytes_per_sample, const u_int32_t channels = 1);
+  void FileReadChunk(std::ifstream& file, DataChunk& data_chunk);
 
   uint32_t DataLength(const uint32_t bytes_per_sample, const uint32_t samples, const uint32_t channels) const;
+
+  void ReadAndWriteHeaders(const std::string& name, std::ifstream& file, std::ostream& out,
+                           FormatSubchunk& format_subchunk, FormatSubchunkHeader& format_subchunk_header);
+
+  char* FileReadData(std::ifstream& file, const uint32_t length);
+
+  void WriteWavSnippet(const std::string& name, std::ostream& out, FormatSubchunk& format_subchunk,
+                       DataChunk& wav_chunk, char* data);
+
+  void WriteSamples(std::ostream* out, char* data, const uint32_t starting_sample, const uint32_t samples_to_write,
+                    const uint32_t bytes_per_sample, const u_int32_t channels = 1);
 
  private:
   rlog::StdioNode log{STDERR_FILENO};

@@ -37,7 +37,7 @@ class FileUtilTests : public ::testing::Test {
 
 /** slow tests that must interact with the filesystem */
 class FileUtil_SlowTests_Size : public FileUtilTests {};
-class FileUtil_SlowTests_ExecuteStreamFunction : public FileUtilTests {};
+class FileUtil_SlowTests_Execute : public FileUtilTests {};
 
 TEST_F(FileUtil_SlowTests_Size, AnswersFileContentSize) {
   std::string content("12345");
@@ -47,7 +47,7 @@ TEST_F(FileUtil_SlowTests_Size, AnswersFileContentSize) {
   EXPECT_EQ(expected_size, util.Size(temp_file_name));
 }
 
-TEST_F(FileUtil_SlowTests_ExecuteStreamFunction, IsPassedStreamFromFile) {
+TEST_F(FileUtil_SlowTests_Execute, IsPassedStreamFromFile) {
   std::string content("abcdefg");
   std::string buffer;
   std::streamsize returnValue{999};
@@ -66,7 +66,7 @@ TEST_F(FileUtil_SlowTests_ExecuteStreamFunction, IsPassedStreamFromFile) {
   ASSERT_EQ(content, buffer);
 }
 
-TEST_F(FileUtil_SlowTests_ExecuteStreamFunction, DemonstratedWithStreamUtilSizeFunction) {
+TEST_F(FileUtil_SlowTests_Execute, DemonstratedWithStreamUtilSizeFunction) {
   std::string content("abcdefg");
   CreateTempFile(content);
 
