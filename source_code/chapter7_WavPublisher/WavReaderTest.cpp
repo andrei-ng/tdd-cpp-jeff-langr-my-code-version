@@ -9,6 +9,7 @@
 #include "WavReader.h"
 
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -97,6 +98,45 @@ TEST_F(WavReader_WriteSnippet, UpdatesTotalSeconds) {
   uint32_t num_samples_per_second =
       num_bytes_in_chunk / (number_of_bits_in_two_bytes / 8 / format_subchunk.samples_per_second);
 
+  reader.WriteWavSnippet("any", output, format_subchunk, data_chunk, data);
+
+  ASSERT_EQ(num_samples_per_second, reader.total_seconds_to_write);
+}
+
+class MockWavDescriptor : public WavDescriptor {
+ public:
+  MockWavDescriptor() : WavDescriptor("") {}
+  MOCK_METHOD5(add, void(const std::string&, const std::string&, uint32_t total_seconds, uint32_t, uint32_t));
+};
+
+class WavReader_WriteSnippetWithMock : public ::testing::Test {
+ public:
+//  std::shared_ptr<MockWavDescriptor> descriptor{new MockWavDescriptor};
+  std::shared_ptr<MockWavDescriptor> descriptor = std::make_shared<MockWavDescriptor>();
+  WavReader reader{"", "", descriptor};
+  std::istringstream input{""};
+  std::ostringstream output;
+  FormatSubchunk format_subchunk;
+  DataChunk data_chunk;
+  uint32_t num_bytes_in_chunk = 8;  // number of bytes
+  uint32_t number_of_bits_in_two_bytes{2 * 8};
+  char* data;
+
+  void SetUp() override {
+    data = new char[4];
+    data_chunk.length = num_bytes_in_chunk;
+    format_subchunk.bits_per_sample = static_cast<unsigned short>(number_of_bits_in_two_bytes);
+    format_subchunk.samples_per_second = 1;
+  }
+
+  void TearDown() override { delete[] data; }
+};
+
+TEST_F(WavReader_WriteSnippetWithMock, UpdatesTotalSeconds) {
+  uint32_t num_samples_per_second =
+      num_bytes_in_chunk / (number_of_bits_in_two_bytes / 8 / format_subchunk.samples_per_second);
+
+  EXPECT_CALL(*descriptor, add(_,_,num_samples_per_second,_,_)).Times(1);
   reader.WriteWavSnippet("any", output, format_subchunk, data_chunk, data);
 
   ASSERT_EQ(num_samples_per_second, reader.total_seconds_to_write);

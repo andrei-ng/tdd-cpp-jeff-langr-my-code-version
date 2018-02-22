@@ -47,8 +47,11 @@ struct FactChunk {
   uint32_t samplesPerChannel;
 };
 
-WavReader::WavReader(const std::string& source, const std::string& dest) : source_(source), dest_(dest) {
-  descriptor_ = new WavDescriptor(dest);
+WavReader::WavReader(const std::string& source, const std::string& dest, std::shared_ptr<WavDescriptor> descriptor)
+    : descriptor_(descriptor), source_(source), dest_(dest) {
+  if (!descriptor_) {
+    descriptor_ = std::make_shared<WavDescriptor>(dest);
+  }
 
   rlog_channel_ = DEF_CHANNEL("info/wav", rlog::Log_Debug);
   log.subscribeTo((rlog::RLogNode*)RLOG_CHANNEL("info/wav"));
@@ -56,7 +59,7 @@ WavReader::WavReader(const std::string& source, const std::string& dest) : sourc
 }
 
 WavReader::~WavReader() {
-  delete descriptor_;
+  descriptor_.reset();
   delete rlog_channel_;
 }
 

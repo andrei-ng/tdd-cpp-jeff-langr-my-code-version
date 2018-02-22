@@ -12,6 +12,7 @@
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include <string>
+#include <memory>
 
 #include "WavDescriptor.h"
 #include "rlog/RLogChannel.h"
@@ -37,7 +38,7 @@ struct DataChunk {
 
 class WavReader {
  public:
-  WavReader(const std::string& source, const std::string& dest);
+  WavReader(const std::string& source, const std::string& dest, std::shared_ptr<WavDescriptor> descriptor = nullptr);
   virtual ~WavReader();
   void Open(const std::string& name, bool trace);
   void List(const boost::filesystem::path& dir, const std::string& filename,
@@ -54,6 +55,7 @@ class WavReader {
                     const uint32_t bytes_per_sample, const u_int32_t channels = 1);
 
   uint32_t total_seconds_to_write;
+
  private:
   void SeekToEndOfHeader(std::ifstream& file, int headerLength);
   void FileReadChunk(std::ifstream& file, DataChunk& data_chunk);
@@ -66,7 +68,7 @@ class WavReader {
   std::string ToString(int8_t* c, unsigned int size);
 
   rlog::StdioNode log{STDERR_FILENO};
-  WavDescriptor* descriptor_;
+  std::shared_ptr<WavDescriptor> descriptor_;
   rlog::RLogChannel* rlog_channel_;
   std::string source_;
   std::string dest_;
