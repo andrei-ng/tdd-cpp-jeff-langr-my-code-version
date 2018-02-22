@@ -23,6 +23,6 @@ int main(int argc, char** argv) {
   auto source = argv[1];
   auto dest = argv[2];
 
-  WavReader reader(source, dest);
+  wav_reader::WavReader reader(source, dest);
   reader.PublishSnippets();
 }

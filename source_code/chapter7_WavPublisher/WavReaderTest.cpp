@@ -15,6 +15,7 @@
 #include "gmock/gmock.h"
 
 using namespace testing;
+using namespace wav_reader;
 
 class WavReader_WriteSamples : public ::testing::Test {
  public:
@@ -69,4 +70,34 @@ TEST_F(WavReader_DataLength, IsProductOfChannels_bytes_per_sample_and_Samples) {
   uint32_t length = reader.DataLength(bytes_per_sample, samples, channels);
 
   ASSERT_EQ(2 * 5 * 4, length);
+}
+
+class WavReader_WriteSnippet : public ::testing::Test {
+ public:
+  WavReader reader{"", ""};
+  std::istringstream input{""};
+  std::ostringstream output;
+  FormatSubchunk format_subchunk;
+  DataChunk data_chunk;
+  uint32_t num_bytes_in_chunk = 8;  // number of bytes
+  uint32_t number_of_bits_in_two_bytes{2 * 8};
+  char* data;
+
+  void SetUp() override {
+    data = new char[4];
+    data_chunk.length = num_bytes_in_chunk;
+    format_subchunk.bits_per_sample = static_cast<unsigned short>(number_of_bits_in_two_bytes);
+    format_subchunk.samples_per_second = 1;
+  }
+
+  void TearDown() override { delete[] data; }
+};
+
+TEST_F(WavReader_WriteSnippet, UpdatesTotalSeconds) {
+  uint32_t num_samples_per_second =
+      num_bytes_in_chunk / (number_of_bits_in_two_bytes / 8 / format_subchunk.samples_per_second);
+
+  reader.WriteWavSnippet("any", output, format_subchunk, data_chunk, data);
+
+  ASSERT_EQ(num_samples_per_second, reader.total_seconds_to_write);
 }

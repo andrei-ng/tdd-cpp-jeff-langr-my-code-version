@@ -17,9 +17,9 @@
 #include <rlog/StdioNode.h>
 #include <rlog/rlog.h>
 
+namespace wav_reader {
+
 using namespace std;
-using namespace boost::filesystem;
-using namespace rlog;
 
 bool HasExtension(const string& filename, const string& s) {
   string ext{"." + s};
@@ -38,19 +38,6 @@ struct FormatSubchunkHeader {
   uint32_t subchunk_size;
 };
 
-struct FormatSubchunk {
-  uint16_t format_tag;
-  uint16_t channels;
-  uint32_t samples_per_second;
-  uint32_t average_bytes_per_second;
-  uint16_t block_align;
-  uint16_t bits_per_sample;
-};
-
-struct DataChunk {
-  uint32_t length;
-};
-
 struct FactOrData {
   int8_t tag[4];
 };
@@ -63,8 +50,8 @@ struct FactChunk {
 WavReader::WavReader(const std::string& source, const std::string& dest) : source_(source), dest_(dest) {
   descriptor_ = new WavDescriptor(dest);
 
-  rlog_channel_ = DEF_CHANNEL("info/wav", Log_Debug);
-  log.subscribeTo((RLogNode*)RLOG_CHANNEL("info/wav"));
+  rlog_channel_ = DEF_CHANNEL("info/wav", rlog::Log_Debug);
+  log.subscribeTo((rlog::RLogNode*)RLOG_CHANNEL("info/wav"));
   rLog(rlog_channel_, "reading from %s writing to %s", source.c_str(), dest.c_str());
 }
 
@@ -74,9 +61,9 @@ WavReader::~WavReader() {
 }
 
 void WavReader::PublishSnippets() {
-  directory_iterator itEnd;
-  for (directory_iterator it(source_); it != itEnd; ++it)
-    if (!is_directory(it->status()) &&
+  boost::filesystem::directory_iterator itEnd;
+  for (boost::filesystem::directory_iterator it(source_); it != itEnd; ++it)
+    if (!boost::filesystem::is_directory(it->status()) &&
         //  it->path().filename().string()=="husten.wav" &&
         HasExtension(it->path().filename().string(), "wav"))
       Open(it->path().filename().string(), false);
@@ -113,9 +100,6 @@ void WavReader::FileReadChunk(ifstream& file, DataChunk& data_chunk) {
 
 void WavReader::WriteWavSnippet(const std::string& name, std::ostream& out, FormatSubchunk& format_subchunk,
                                 DataChunk& wav_chunk, char* data) {
-  // all of it
-  //   out.write(data, dataChunk.length);
-  // TODO: multiple channels
   uint32_t seconds_desired{10};
   if (format_subchunk.bits_per_sample == 0) format_subchunk.bits_per_sample = 8;
   uint32_t bytes_per_sample{format_subchunk.bits_per_sample / uint32_t{8}};
@@ -124,18 +108,17 @@ void WavReader::WriteWavSnippet(const std::string& name, std::ostream& out, Form
 
   samples_to_write = min(samples_to_write, total_samples);
 
-  uint32_t totalSeconds{total_samples / format_subchunk.samples_per_second};
-  rLog(rlog_channel_, "total seconds %u ", totalSeconds);
+  total_seconds_to_write = total_samples / format_subchunk.samples_per_second;
+  rLog(rlog_channel_, "total seconds %u ", total_seconds_to_write);
 
   wav_chunk.length = DataLength(bytes_per_sample, samples_to_write, format_subchunk.channels);
   out.write(reinterpret_cast<char*>(&wav_chunk), sizeof(DataChunk));
 
-  uint32_t starting_sample{totalSeconds >= 10 ? 10 * format_subchunk.samples_per_second : 0};
+  uint32_t starting_sample{total_seconds_to_write >= 10 ? 10 * format_subchunk.samples_per_second : 0};
   WriteSamples(&out, data, starting_sample, samples_to_write, bytes_per_sample);
 
   rLog(rlog_channel_, "completed writing %s", name.c_str());
-  descriptor_->add(dest_, name, totalSeconds, format_subchunk.samples_per_second, format_subchunk.channels);
-  // out.close(); ostreams are RAII
+  descriptor_->add(dest_, name, total_seconds_to_write, format_subchunk.samples_per_second, format_subchunk.channels);
 }
 
 void WavReader::WriteSamples(std::ostream* out, char* data, const uint32_t starting_sample,
@@ -235,3 +218,4 @@ void WavReader::SeekToEndOfHeader(ifstream& file, int subchunk_size) {
 uint32_t WavReader::DataLength(const uint32_t bytes_per_sample, const uint32_t samples, const uint32_t channels) const {
   return bytes_per_sample * samples * channels;
 }
+}  // namespace

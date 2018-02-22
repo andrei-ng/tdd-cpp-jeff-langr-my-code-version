@@ -19,9 +19,21 @@
 
 bool HasExtension(const std::string& text, const std::string& substring);
 
+namespace wav_reader {
+
 struct FormatSubchunkHeader;
-struct FormatSubchunk;
-struct DataChunk;
+struct FormatSubchunk {
+  uint16_t format_tag;
+  uint16_t channels;
+  uint32_t samples_per_second;
+  uint32_t average_bytes_per_second;
+  uint16_t block_align;
+  uint16_t bits_per_sample;
+};
+
+struct DataChunk {
+  uint32_t length;
+};
 
 class WavReader {
  public:
@@ -33,14 +45,7 @@ class WavReader {
   void ListAll() const;
   void PublishSnippets();
 
-  void FileReadChunk(std::ifstream& file, DataChunk& data_chunk);
-
   uint32_t DataLength(const uint32_t bytes_per_sample, const uint32_t samples, const uint32_t channels) const;
-
-  void ReadAndWriteHeaders(const std::string& name, std::ifstream& file, std::ostream& out,
-                           FormatSubchunk& format_subchunk, FormatSubchunkHeader& format_subchunk_header);
-
-  char* FileReadData(std::ifstream& file, const uint32_t length);
 
   void WriteWavSnippet(const std::string& name, std::ostream& out, FormatSubchunk& format_subchunk,
                        DataChunk& wav_chunk, char* data);
@@ -48,17 +53,24 @@ class WavReader {
   void WriteSamples(std::ostream* out, char* data, const uint32_t starting_sample, const uint32_t samples_to_write,
                     const uint32_t bytes_per_sample, const u_int32_t channels = 1);
 
+  uint32_t total_seconds_to_write;
  private:
-  rlog::StdioNode log{STDERR_FILENO};
-  WavDescriptor* descriptor_;
-
   void SeekToEndOfHeader(std::ifstream& file, int headerLength);
+  void FileReadChunk(std::ifstream& file, DataChunk& data_chunk);
+
+  void ReadAndWriteHeaders(const std::string& name, std::ifstream& file, std::ostream& out,
+                           FormatSubchunk& format_subchunk, FormatSubchunkHeader& format_subchunk_header);
+
+  char* FileReadData(std::ifstream& file, const uint32_t length);
+
   std::string ToString(int8_t* c, unsigned int size);
 
+  rlog::StdioNode log{STDERR_FILENO};
+  WavDescriptor* descriptor_;
   rlog::RLogChannel* rlog_channel_;
-
   std::string source_;
   std::string dest_;
 };
+}
 
 #endif
