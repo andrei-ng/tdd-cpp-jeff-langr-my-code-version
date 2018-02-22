@@ -48,7 +48,7 @@ struct FactChunk {
 };
 
 WavReader::WavReader(const std::string& source, const std::string& dest, std::shared_ptr<WavDescriptor> descriptor)
-    : descriptor_(descriptor), source_(source), dest_(dest) {
+    : source_(source), dest_(dest), descriptor_(descriptor), file_util_(nullptr) {
   if (!descriptor_) {
     descriptor_ = std::make_shared<WavDescriptor>(dest);
   }
@@ -121,7 +121,13 @@ void WavReader::WriteWavSnippet(const std::string& name, std::ostream& out, Form
   WriteSamples(&out, data, starting_sample, samples_to_write, bytes_per_sample);
 
   rLog(rlog_channel_, "completed writing %s", name.c_str());
-  descriptor_->add(dest_, name, total_seconds_to_write, format_subchunk.samples_per_second, format_subchunk.channels);
+
+  long file_size = 0;
+  if (file_util_) {
+    file_size = file_util_->Size(name);
+  }
+  descriptor_->Add(dest_, name, total_seconds_to_write, format_subchunk.samples_per_second, format_subchunk.channels,
+                   file_size);
 }
 
 void WavReader::WriteSamples(std::ostream* out, char* data, const uint32_t starting_sample,
@@ -139,6 +145,7 @@ void WavReader::WriteSamples(std::ostream* out, char* data, const uint32_t start
     }
   }
 }
+void WavReader::SelectFileUtility(std::shared_ptr<FileUtil> file_util) { file_util_ = file_util; }
 
 void WavReader::ReadAndWriteHeaders(const std::string& name, std::ifstream& file, std::ostream& out,
                                     FormatSubchunk& format_subchunk, FormatSubchunkHeader& format_subchunk_header) {

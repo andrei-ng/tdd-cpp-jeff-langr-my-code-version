@@ -11,12 +11,14 @@
 
 #include <boost/filesystem.hpp>
 #include <fstream>
-#include <string>
 #include <memory>
+#include <string>
 
-#include "WavDescriptor.h"
 #include "rlog/RLogChannel.h"
 #include "rlog/StdioNode.h"
+
+#include "FileUtil.h"
+#include "WavDescriptor.h"
 
 bool HasExtension(const std::string& text, const std::string& substring);
 
@@ -54,6 +56,8 @@ class WavReader {
   void WriteSamples(std::ostream* out, char* data, const uint32_t starting_sample, const uint32_t samples_to_write,
                     const uint32_t bytes_per_sample, const u_int32_t channels = 1);
 
+  void SelectFileUtility(std::shared_ptr<FileUtil> file_util);
+
   uint32_t total_seconds_to_write;
 
  private:
@@ -68,10 +72,11 @@ class WavReader {
   std::string ToString(int8_t* c, unsigned int size);
 
   rlog::StdioNode log{STDERR_FILENO};
-  std::shared_ptr<WavDescriptor> descriptor_;
   rlog::RLogChannel* rlog_channel_;
   std::string source_;
   std::string dest_;
+  std::shared_ptr<WavDescriptor> descriptor_;
+  std::shared_ptr<FileUtil> file_util_;
 };
 }
 

@@ -15,6 +15,8 @@
 
 #include "gmock/gmock.h"
 
+#include "FileUtil.h"
+
 using namespace testing;
 using namespace wav_reader;
 
@@ -106,13 +108,22 @@ TEST_F(WavReader_WriteSnippet, UpdatesTotalSeconds) {
 class MockWavDescriptor : public WavDescriptor {
  public:
   MockWavDescriptor() : WavDescriptor("") {}
-  MOCK_METHOD5(add, void(const std::string&, const std::string&, uint32_t total_seconds, uint32_t, uint32_t));
+  MOCK_METHOD6(Add, void(const std::string&, const std::string&, uint32_t total_seconds, uint32_t, uint32_t,
+                         long file_size));
+};
+
+class MockFileUtil : public FileUtil {
+ public:
+  MockFileUtil() : FileUtil() {}
+  MOCK_METHOD1(Size, std::streamsize(const std::string& name));
 };
 
 class WavReader_WriteSnippetWithMock : public ::testing::Test {
  public:
-//  std::shared_ptr<MockWavDescriptor> descriptor{new MockWavDescriptor};
+  //  std::shared_ptr<MockWavDescriptor> descriptor{new MockWavDescriptor};
   std::shared_ptr<MockWavDescriptor> descriptor = std::make_shared<MockWavDescriptor>();
+  std::shared_ptr<MockFileUtil> file_util = std::make_shared<MockFileUtil>();
+
   WavReader reader{"", "", descriptor};
   std::istringstream input{""};
   std::ostringstream output;
@@ -120,23 +131,40 @@ class WavReader_WriteSnippetWithMock : public ::testing::Test {
   DataChunk data_chunk;
   uint32_t num_bytes_in_chunk = 8;  // number of bytes
   uint32_t number_of_bits_in_two_bytes{2 * 8};
+  unsigned int arbitrary_file_size;
   char* data;
 
   void SetUp() override {
     data = new char[4];
+    arbitrary_file_size = 5;
     data_chunk.length = num_bytes_in_chunk;
     format_subchunk.bits_per_sample = static_cast<unsigned short>(number_of_bits_in_two_bytes);
     format_subchunk.samples_per_second = 1;
+
+    // Set the Mock FileUtil
+    reader.SelectFileUtility(file_util);
   }
 
   void TearDown() override { delete[] data; }
 };
 
-TEST_F(WavReader_WriteSnippetWithMock, UpdatesTotalSeconds) {
+TEST_F(WavReader_WriteSnippetWithMock, SendTotalSecondsToDescriptor) {
   uint32_t num_samples_per_second =
       num_bytes_in_chunk / (number_of_bits_in_two_bytes / 8 / format_subchunk.samples_per_second);
 
-  EXPECT_CALL(*descriptor, add(_,_,num_samples_per_second,_,_)).Times(1);
+  EXPECT_CALL(*file_util, Size(_)).Times(1).WillOnce(Return(0));
+  EXPECT_CALL(*descriptor, Add(_, _, num_samples_per_second, _, _, _)).Times(1);
+  reader.WriteWavSnippet("any", output, format_subchunk, data_chunk, data);
+
+  ASSERT_EQ(num_samples_per_second, reader.total_seconds_to_write);
+}
+
+TEST_F(WavReader_WriteSnippetWithMock, SendsFileLengthAndTotalSecondsToDescriptor) {
+  uint32_t num_samples_per_second =
+      num_bytes_in_chunk / (number_of_bits_in_two_bytes / 8 / format_subchunk.samples_per_second);
+
+  EXPECT_CALL(*file_util, Size(_)).Times(1).WillOnce(Return(arbitrary_file_size));
+  EXPECT_CALL(*descriptor, Add(_, _, num_samples_per_second, _, _, arbitrary_file_size)).Times(1);
   reader.WriteWavSnippet("any", output, format_subchunk, data_chunk, data);
 
   ASSERT_EQ(num_samples_per_second, reader.total_seconds_to_write);

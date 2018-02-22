@@ -27,10 +27,10 @@ class WavDescriptor {
     outstr = new std::ofstream(dir + "/WavSnippets.dat", std::ios::out | std::ios::binary);
   }
 
-  virtual void add(const std::string& dir, const std::string& filename, uint32_t totalSeconds,
-                   uint32_t samples_per_second, uint32_t channels) {
+  virtual void Add(const std::string& /*dir*/, const std::string& filename, uint32_t totalSeconds,
+                   uint32_t samples_per_second, uint32_t channels, long /*file_size*/) {
     WavDescriptorRecord rec;
-    cpy(rec.filename, filename.c_str());
+    Copy(rec.filename, filename.c_str());
     rec.seconds = totalSeconds;
     rec.samples_per_second = samples_per_second;
     rec.channels = channels;
@@ -38,7 +38,7 @@ class WavDescriptor {
     outstr->write(reinterpret_cast<char*>(&rec), sizeof(WavDescriptorRecord));
   }
 
-  void cpy(int8_t* dest, const char* src) {
+  void Copy(int8_t* dest, const char* src) {
     for (int i = 0; src[i] != 0; i++) dest[i] = src[i];
   }
 
