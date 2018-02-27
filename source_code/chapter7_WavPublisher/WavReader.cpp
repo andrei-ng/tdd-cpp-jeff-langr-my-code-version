@@ -95,7 +95,6 @@ void WavReader::Open(const std::string& name, bool trace) {
 
   char* data = FileReadData(file, wav_chunk.length);  // memory leak (the pointer inside the call is never released)
 
-  Snippet snippet;
   WriteWavSnippet(name, out, format_subchunk, wav_chunk, data);
 }
 
@@ -112,12 +111,13 @@ void WavReader::WriteWavSnippet(const std::string& name, std::ostream& out, Form
   uint32_t samples_to_write{seconds_desired * format_subchunk.samples_per_second};
   uint32_t total_samples{wav_chunk.length / bytes_per_sample};
 
-  samples_to_write = min(samples_to_write, total_samples);
+  samples_to_write = std::min(samples_to_write, total_samples);
 
   total_seconds_to_write = total_samples / format_subchunk.samples_per_second;
   rLog(rlog_channel_, "total seconds %u ", total_seconds_to_write);
 
-  wav_chunk.length = DataLength(bytes_per_sample, samples_to_write, format_subchunk.channels);
+  Snippet snippet;
+  wav_chunk.length = snippet.DataLength(bytes_per_sample, samples_to_write, format_subchunk.channels);
   out.write(reinterpret_cast<char*>(&wav_chunk), sizeof(DataChunk));
 
   uint32_t starting_sample{total_seconds_to_write >= 10 ? 10 * format_subchunk.samples_per_second : 0};
@@ -228,7 +228,4 @@ void WavReader::SeekToEndOfHeader(ifstream& file, int subchunk_size) {
   file.seekg(bytes, ios_base::cur);
 }
 
-uint32_t WavReader::DataLength(const uint32_t bytes_per_sample, const uint32_t samples, const uint32_t channels) const {
-  return bytes_per_sample * samples * channels;
-}
 }  // namespace

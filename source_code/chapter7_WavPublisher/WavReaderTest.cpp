@@ -64,6 +64,7 @@ TEST_F(WavReader_WriteSamples, IncorporatesChannelCount) {
 class WavReader_DataLength : public ::testing::Test {
  public:
   WavReader reader{".", "."};
+  Snippet snippet;
 };
 
 TEST_F(WavReader_DataLength, IsProductOfChannels_bytes_per_sample_and_Samples) {
@@ -71,7 +72,7 @@ TEST_F(WavReader_DataLength, IsProductOfChannels_bytes_per_sample_and_Samples) {
   uint32_t samples{5};
   uint32_t channels{4};
 
-  uint32_t length = reader.DataLength(bytes_per_sample, samples, channels);
+  uint32_t length = snippet.DataLength(bytes_per_sample, samples, channels);
 
   ASSERT_EQ(2 * 5 * 4, length);
 }

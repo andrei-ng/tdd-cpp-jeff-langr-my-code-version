@@ -48,8 +48,6 @@ class WavReader {
   void ListAll() const;
   void PublishSnippets();
 
-  uint32_t DataLength(const uint32_t bytes_per_sample, const uint32_t samples, const uint32_t channels) const;
-
   void WriteWavSnippet(const std::string& name, std::ostream& out, FormatSubchunk& format_subchunk,
                        DataChunk& wav_chunk, char* data);
 
