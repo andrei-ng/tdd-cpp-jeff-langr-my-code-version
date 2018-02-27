@@ -13,11 +13,11 @@
 #include <cstring>
 #include <iostream>
 
-#include <rlog/StdioNode.h>
-#include <rlog/rlog.h>
+#include "rlog/StdioNode.h"
+#include "rlog/rlog.h"
 
-#include "WavDescriptor.h"
 #include "Snippet.h"
+#include "WavDescriptor.h"
 
 namespace wav_reader {
 
@@ -116,13 +116,13 @@ void WavReader::WriteWavSnippet(const std::string& name, std::ostream& out, Form
   total_seconds_to_write = total_samples / format_subchunk.samples_per_second;
   rLog(rlog_channel_, "total seconds %u ", total_seconds_to_write);
 
-  Snippet snippet;
+  Snippet snippet(file_util_, descriptor_, dest_, rlog_channel_);
   wav_chunk.length = snippet.DataLength(bytes_per_sample, samples_to_write, format_subchunk.channels);
   out.write(reinterpret_cast<char*>(&wav_chunk), sizeof(DataChunk));
 
   uint32_t starting_sample{total_seconds_to_write >= 10 ? 10 * format_subchunk.samples_per_second : 0};
-  WriteSamples(&out, data, starting_sample, samples_to_write, bytes_per_sample);
-
+  rLog(rlog_channel_, "writing %u samples", samples_to_write);
+  snippet.WriteSamples(&out, data, starting_sample, samples_to_write, bytes_per_sample, format_subchunk.channels);
   rLog(rlog_channel_, "completed writing %s", name.c_str());
 
   long file_size = 0;
@@ -133,21 +133,6 @@ void WavReader::WriteWavSnippet(const std::string& name, std::ostream& out, Form
                    file_size);
 }
 
-void WavReader::WriteSamples(std::ostream* out, char* data, const uint32_t starting_sample,
-                             const uint32_t samples_to_write, const uint32_t bytes_per_sample,
-                             const u_int32_t channels) {
-  rLog(rlog_channel_, "writing %u samples", samples_to_write);
-
-  for (auto sample = starting_sample; sample < starting_sample + samples_to_write; sample++) {
-    auto byteOffsetForSample = sample * bytes_per_sample * channels;
-    for (uint32_t channel = 0; channel < channels; channel++) {
-      auto byteOffsetForChannel = byteOffsetForSample + (channel * bytes_per_sample);
-      for (uint32_t byte = 0; byte < bytes_per_sample; byte++) {
-        out->put(data[byteOffsetForChannel + byte]);
-      }
-    }
-  }
-}
 void WavReader::SelectFileUtility(std::shared_ptr<FileUtil> file_util) { file_util_ = file_util; }
 
 void WavReader::ReadAndWriteHeaders(const std::string& name, std::ifstream& file, std::ostream& out,

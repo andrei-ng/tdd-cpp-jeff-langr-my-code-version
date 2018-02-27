@@ -51,9 +51,6 @@ class WavReader {
   void WriteWavSnippet(const std::string& name, std::ostream& out, FormatSubchunk& format_subchunk,
                        DataChunk& wav_chunk, char* data);
 
-  void WriteSamples(std::ostream* out, char* data, const uint32_t starting_sample, const uint32_t samples_to_write,
-                    const uint32_t bytes_per_sample, const u_int32_t channels = 1);
-
   void SelectFileUtility(std::shared_ptr<FileUtil> file_util);
 
   uint32_t total_seconds_to_write;
