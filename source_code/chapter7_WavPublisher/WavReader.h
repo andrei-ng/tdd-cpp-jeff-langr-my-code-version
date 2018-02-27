@@ -19,24 +19,12 @@
 
 #include "FileUtil.h"
 #include "WavDescriptor.h"
-
-bool HasExtension(const std::string& text, const std::string& substring);
+#include "WavStructs.h"
 
 namespace wav_reader {
 
+bool HasExtension(const std::string& text, const std::string& substring);
 struct FormatSubchunkHeader;
-struct FormatSubchunk {
-  uint16_t format_tag;
-  uint16_t channels;
-  uint32_t samples_per_second;
-  uint32_t average_bytes_per_second;
-  uint16_t block_align;
-  uint16_t bits_per_sample;
-};
-
-struct DataChunk {
-  uint32_t length;
-};
 
 class WavReader {
  public:
@@ -47,9 +35,6 @@ class WavReader {
             std::vector<boost::filesystem::path>& found) const;
   void ListAll() const;
   void PublishSnippets();
-
-  void WriteWavSnippet(const std::string& name, std::ostream& out, FormatSubchunk& format_subchunk,
-                       DataChunk& wav_chunk, char* data);
 
   void SelectFileUtility(std::shared_ptr<FileUtil> file_util);
 

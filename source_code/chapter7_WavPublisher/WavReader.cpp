@@ -95,42 +95,13 @@ void WavReader::Open(const std::string& name, bool trace) {
 
   char* data = FileReadData(file, wav_chunk.length);  // memory leak (the pointer inside the call is never released)
 
-  WriteWavSnippet(name, out, format_subchunk, wav_chunk, data);
+  Snippet snippet(file_util_, descriptor_, dest_, rlog_channel_);
+  snippet.WriteWavSnippet(name, out, format_subchunk, wav_chunk, data);
 }
 
 void WavReader::FileReadChunk(ifstream& file, DataChunk& data_chunk) {
   file.read(reinterpret_cast<char*>(&data_chunk), sizeof(DataChunk));
   rLog(rlog_channel_, "data length = %u", data_chunk.length);
-}
-
-void WavReader::WriteWavSnippet(const std::string& name, std::ostream& out, FormatSubchunk& format_subchunk,
-                                DataChunk& wav_chunk, char* data) {
-  uint32_t seconds_desired{10};
-  if (format_subchunk.bits_per_sample == 0) format_subchunk.bits_per_sample = 8;
-  uint32_t bytes_per_sample{format_subchunk.bits_per_sample / uint32_t{8}};
-  uint32_t samples_to_write{seconds_desired * format_subchunk.samples_per_second};
-  uint32_t total_samples{wav_chunk.length / bytes_per_sample};
-
-  samples_to_write = std::min(samples_to_write, total_samples);
-
-  total_seconds_to_write = total_samples / format_subchunk.samples_per_second;
-  rLog(rlog_channel_, "total seconds %u ", total_seconds_to_write);
-
-  Snippet snippet(file_util_, descriptor_, dest_, rlog_channel_);
-  wav_chunk.length = snippet.DataLength(bytes_per_sample, samples_to_write, format_subchunk.channels);
-  out.write(reinterpret_cast<char*>(&wav_chunk), sizeof(DataChunk));
-
-  uint32_t starting_sample{total_seconds_to_write >= 10 ? 10 * format_subchunk.samples_per_second : 0};
-  rLog(rlog_channel_, "writing %u samples", samples_to_write);
-  snippet.WriteSamples(&out, data, starting_sample, samples_to_write, bytes_per_sample, format_subchunk.channels);
-  rLog(rlog_channel_, "completed writing %s", name.c_str());
-
-  long file_size = 0;
-  if (file_util_) {
-    file_size = file_util_->Size(name);
-  }
-  descriptor_->Add(dest_, name, total_seconds_to_write, format_subchunk.samples_per_second, format_subchunk.channels,
-                   file_size);
 }
 
 void WavReader::SelectFileUtility(std::shared_ptr<FileUtil> file_util) { file_util_ = file_util; }
