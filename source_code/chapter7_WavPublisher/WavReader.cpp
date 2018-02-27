@@ -7,7 +7,6 @@
  * Visit http://www.pragmaticprogrammer.com/titles/lotdd for more book information.
 ***/
 #include "WavReader.h"
-#include "WavDescriptor.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -16,6 +15,9 @@
 
 #include <rlog/StdioNode.h>
 #include <rlog/rlog.h>
+
+#include "WavDescriptor.h"
+#include "Snippet.h"
 
 namespace wav_reader {
 
@@ -93,6 +95,7 @@ void WavReader::Open(const std::string& name, bool trace) {
 
   char* data = FileReadData(file, wav_chunk.length);  // memory leak (the pointer inside the call is never released)
 
+  Snippet snippet;
   WriteWavSnippet(name, out, format_subchunk, wav_chunk, data);
 }
 

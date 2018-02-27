@@ -16,6 +16,7 @@
 #include "gmock/gmock.h"
 
 #include "FileUtil.h"
+#include "Snippet.h"
 
 using namespace testing;
 using namespace wav_reader;
