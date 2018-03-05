@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -Wall")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 include(gtest)
 
-# Find the JsonCpp package
+# Find the JsonCpp library
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(JSONCPP jsoncpp REQUIRED)
 include_directories("${JSONCPP_INCLUDE_DIRS}")
