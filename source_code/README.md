@@ -8,7 +8,7 @@
   	- Library System Example (not done - quite clear from the book)
   	- Parametrized Test Example
 - [x] Chapter 5: Test Doubles
- 	- Stubbing of a class
+ 	- Hand-Crafted Test Double: aka stubbing of a class
  	- ...
 - [x] Chapter 8: Legacy Challenges
   	- WavReader refactoring 

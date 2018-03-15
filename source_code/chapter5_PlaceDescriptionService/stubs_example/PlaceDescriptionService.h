@@ -17,16 +17,16 @@
 class PlaceDescriptionService {
  public:
   PlaceDescriptionService(Http* http) : http_(http) {}
-  std::string LocationSummary(const std::string& latitude, const std::string& longitude) {
-    auto requested_url =
-        "http://open.mapquestapi.com/nominatim/v1/reverse?key=KEY&format=json&lat=" + latitude + "&lon=" + longitude;
-    auto json_response = http_->Get(requested_url);
 
-    AddressExtractor extractor;
-    auto address = extractor.AddressFrom(json_response);
+  std::string LocationSummary(const std::string& latitude, const std::string& longitude);
 
-    return address.road + ", " + address.city + ", " + address.state + ", " + address.country;
-  }
+  std::string LocationSummary(const std::string& json_response) const;
+
+  std::string CreateRequestUrl(const std::string& latitude, const std::string& longitude) const;
+
+  std::string Get(const std::string request_url) const;
+
+  std::string KeyValuePair(const std::string& key, const std::string& value) const;
 
  private:
   Http* http_;

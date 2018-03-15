@@ -27,6 +27,7 @@ class HttpStub : public Http {
  public:
   virtual ~HttpStub() {}
   void Initialize() override {}
+
   std::string Get(const std::string& url) const override {
     Verify(url);
     return R"({ "address": {
@@ -37,9 +38,12 @@ class HttpStub : public Http {
   }
 
   void Verify(const std::string& url) const {
-    /** Current vesion of MAPQUEST API requires user to provide an API KEY.
-      * However, cannot include my own key after "?key=" since this is private.
-      */
+    /* 1. Why did we create a separate method, verify(), for our assertion logic? It’s because of
+     * a Google Mock limitation: you can use assertions that cause fatal failures only in functions with void return
+     *
+     * 2.Current vesion of MAPQUEST API requires user to provide an API KEY.
+     * However, cannot include my own key after "?key=" since this is private.
+     */
     std::string url_start("http://open.mapquestapi.com/nominatim/v1/reverse?key=");
     auto url_end("&format=json&lat=" + APlaceDescriptionService::latitude + "&lon=" +
                  APlaceDescriptionService::longitude);

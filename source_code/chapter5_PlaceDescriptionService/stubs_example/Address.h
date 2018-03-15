@@ -17,6 +17,10 @@ struct Address {
   std::string city;
   std::string state;
   std::string country;
+
+  std::string Summary() const {
+    return road + ", " + city + ", " + state + ", " + country;
+  }
 };
 
 #endif  // TDD_CH5_ADDRESS_H_
