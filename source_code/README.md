@@ -5,6 +5,8 @@
   	- ReTweet Class Example
 - [x] Chapter 4: Test Construction
   	- ReTweet Class Example
+  	- Library System Example (not done - quite clear from the book)
+  	- Parametrized Test Example
 - [x] Chapter 5: Test Doubles
  	- Stubbing of a class
  	- ...
@@ -13,8 +15,6 @@
   	- WavReader refactoring with Mikado Method
 
 ### TODO:
-- [ ] Chapter 4: Test Construction
-  	- Holding Service Example
 - [ ] Chapter 5: Test Doubles
 - [ ] Chapter 6: Incremental Design examples
 - [ ] Chapter 7: Quality Tests
