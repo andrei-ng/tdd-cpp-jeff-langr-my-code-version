@@ -9,7 +9,7 @@
   	- Parametrized Test Example
 - [x] Chapter 5: Test Doubles
  	- Hand-Crafted Test Double: aka stubbing of a class
- 	- ...
+ 	- Using Google Mock Tools
 - [x] Chapter 8: Legacy Challenges
   	- WavReader refactoring 
   	- WavReader refactoring with Mikado Method
