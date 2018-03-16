@@ -31,9 +31,12 @@ class HttpStub : public Http {
 
 TEST_F(APlaceDescriptionService, MakesHttpRequestToObtainAddress) {
   HttpStub http_stub;
-  std::string url_start{"http://open.mapquestapi.com/nominatim/v1/reverse?format=json&"};
-  auto expected_url =
-      url_start + "lat=" + APlaceDescriptionService::latitude + "&" + "lon=" + APlaceDescriptionService::longitude;
+
+  std::string url_start("http://open.mapquestapi.com/nominatim/v1/reverse?key=");
+  std::string url_end("&format=json&lat=" + APlaceDescriptionService::latitude + "&lon=" +
+                      APlaceDescriptionService::longitude);
+
+  auto expected_url = url_start + "KEY" + url_end;
 
   EXPECT_CALL(http_stub, Get(expected_url));
 

@@ -12,5 +12,15 @@
 #include "AddressExtractor.h"
 
 std::string PlaceDescriptionService::LocationSummary(const std::string& latitude, const std::string& longitude) {
+  std::string server{"http://open.mapquestapi.com/"};
+  std::string service{"nominatim/v1/reverse?"};
+  std::string url_request = server + service + KeyValuePair("key", "KEY") + "&" + KeyValuePair("format", "json") + "&" +
+                            KeyValuePair("lat", latitude) + "&" + KeyValuePair("lon", longitude);
+
+  http_->Get(url_request);
   return "";
+}
+
+std::string PlaceDescriptionService::KeyValuePair(const std::string& key, const std::string& value) const {
+  return key + "=" + value;
 }
