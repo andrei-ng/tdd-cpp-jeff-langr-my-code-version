@@ -28,13 +28,11 @@ class HttpStub : public Http {
   virtual ~HttpStub() {}
   void Initialize() override {}
 
+  std::string return_address;
+
   std::string Get(const std::string& url) const override {
     Verify(url);
-    return R"({ "address": {
-                "road":"Drury Ln",
-                "city":"Fountain",
-                "state":"CO",
-                "country":"US" }})";
+    return return_address;
   }
 
   void Verify(const std::string& url) const {
@@ -55,6 +53,11 @@ class HttpStub : public Http {
 
 TEST_F(APlaceDescriptionService, ReturnsDescriptionForValidLocation) {
   HttpStub http_stub;
+  http_stub.return_address = R"({ "address": {
+                             "road":"Drury Ln",
+                             "city":"Fountain",
+                             "state":"CO",
+                             "country":"US" }})";
   PlaceDescriptionService place_descr_service{&http_stub};
 
   auto description = place_descr_service.LocationSummary(latitude, longitude);
