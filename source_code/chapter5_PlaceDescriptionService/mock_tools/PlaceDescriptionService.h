@@ -12,6 +12,7 @@
 
 #include <string>
 #include "Address.h"
+#include "AddressExtractor.h"
 #include "Http.h"
 
 class Http;
@@ -24,7 +25,6 @@ class PlaceDescriptionService {
 
  private:
   std::string CreateRequestUrl(const std::string& latitude, const std::string& longitude) const;
-  std::string LocationSummary(const Address& address) const;
   std::string LocationSummary(const std::string json_response) const;
   std::string KeyValuePair(const std::string& key, const std::string& value) const;
   std::string Get(const std::string& requestUrl) const;
