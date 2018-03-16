@@ -21,18 +21,15 @@ endif()
 set(sources 
   main.cpp
   AddressExtractor.cpp
-#  CurlHttp.cpp
   PlaceDescriptionService.cpp
   AddressExtractor.h
   Address.h
-#  CurlHttp.h
   Http.h
   PlaceDescriptionService.h
 )
 
 set(sources_tests
 	AddressExtractorTest.cpp
-#	CurlHttpTest.cpp
 	PlaceDescriptionServiceTest.cpp
 )
 
