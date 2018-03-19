@@ -29,7 +29,9 @@ std::string PlaceDescriptionService::CreateRequestUrl(const std::string& latitud
          KeyValuePair("lat", latitude) + "&" + KeyValuePair("lon", longitude);
 }
 
-std::string PlaceDescriptionService::Get(const std::string& request_url) const { return http_->Get(request_url); }
+std::string PlaceDescriptionService::Get(const std::string& request_url) const {
+    http_->Initialize();
+    return http_->Get(request_url); }
 
 std::string PlaceDescriptionService::KeyValuePair(const std::string& key, const std::string& value) const {
   return key + "=" + value;

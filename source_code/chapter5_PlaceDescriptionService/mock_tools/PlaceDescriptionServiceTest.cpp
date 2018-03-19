@@ -30,6 +30,7 @@ class HttpStub : public Http {
 };
 
 TEST_F(APlaceDescriptionService, MakesHttpRequestToObtainAddress) {
+  InSequence force_expectation_order;
   HttpStub http_stub;
 
   std::string url_start("http://open.mapquestapi.com/nominatim/v1/reverse?key=");
@@ -37,7 +38,7 @@ TEST_F(APlaceDescriptionService, MakesHttpRequestToObtainAddress) {
                       APlaceDescriptionService::longitude);
 
   auto expected_url = url_start + "KEY" + url_end;
-
+  EXPECT_CALL(http_stub, Initialize());
   EXPECT_CALL(http_stub, Get(expected_url));
 
   PlaceDescriptionService place_descr_service{&http_stub};
@@ -45,7 +46,9 @@ TEST_F(APlaceDescriptionService, MakesHttpRequestToObtainAddress) {
 }
 
 TEST_F(APlaceDescriptionService, FormatsRetrievedAddressIntoSummaryDescription) {
-  HttpStub http_stub;
+  //  HttpStub http_stub;
+  NiceMock<HttpStub> http_stub;
+  //  StrictMock<HttpStub> http_stub;
 
   EXPECT_CALL(http_stub, Get(_))
       .WillOnce(Return(R"({ "address": {"road":"Drury Ln",
