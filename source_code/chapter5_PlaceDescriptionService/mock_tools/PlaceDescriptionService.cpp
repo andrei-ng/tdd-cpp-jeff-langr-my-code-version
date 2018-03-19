@@ -10,21 +10,26 @@
 #include "PlaceDescriptionService.h"
 
 std::string PlaceDescriptionService::LocationSummary(const std::string& latitude, const std::string& longitude) {
-  std::string server{"http://open.mapquestapi.com/"};
-  std::string service{"nominatim/v1/reverse?"};
-  std::string url_request = server + service + KeyValuePair("key", "KEY") + "&" + KeyValuePair("format", "json") + "&" +
-                            KeyValuePair("lat", latitude) + "&" + KeyValuePair("lon", longitude);
-
-  std::string json_response = http_->Get(url_request);
+  auto requested_url = CreateRequestUrl(latitude, longitude);
+  auto json_response = Get(requested_url);
 
   return LocationSummary(json_response);
 }
 
-std::string PlaceDescriptionService::LocationSummary(const std::string json_response) const {
+std::string PlaceDescriptionService::LocationSummary(const std::string& json_response) const {
   AddressExtractor extractor;
   auto address = extractor.AddressFrom(json_response);
   return address.Summary();
 }
+
+std::string PlaceDescriptionService::CreateRequestUrl(const std::string& latitude, const std::string& longitude) const {
+  std::string server{"http://open.mapquestapi.com/"};
+  std::string service{"nominatim/v1/reverse?"};
+  return server + service + KeyValuePair("key", "KEY") + "&" + KeyValuePair("format", "json") + "&" +
+         KeyValuePair("lat", latitude) + "&" + KeyValuePair("lon", longitude);
+}
+
+std::string PlaceDescriptionService::Get(const std::string& request_url) const { return http_->Get(request_url); }
 
 std::string PlaceDescriptionService::KeyValuePair(const std::string& key, const std::string& value) const {
   return key + "=" + value;

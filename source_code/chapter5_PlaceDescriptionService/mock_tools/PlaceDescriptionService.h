@@ -25,9 +25,9 @@ class PlaceDescriptionService {
 
  private:
   std::string CreateRequestUrl(const std::string& latitude, const std::string& longitude) const;
-  std::string LocationSummary(const std::string json_response) const;
+  std::string LocationSummary(const std::string& json_response) const;
   std::string KeyValuePair(const std::string& key, const std::string& value) const;
-  std::string Get(const std::string& requestUrl) const;
+  std::string Get(const std::string& request_url) const;
 
   Http* http_;
 };
