@@ -9,13 +9,12 @@
   	- Parametrized Test Example
 - [x] Chapter 5: Test Doubles
  	- Hand-Crafted Test Double: aka stubbing of a class
- 	- Using Google Mock Tools
+ 	- Using Google Mock Tools: factory, getter, template class injection methods
 - [x] Chapter 8: Legacy Challenges
   	- WavReader refactoring 
   	- WavReader refactoring with Mikado Method
 
 ### TODO:
-- [ ] Chapter 5: Test Doubles
 - [ ] Chapter 6: Incremental Design examples
 - [ ] Chapter 7: Quality Tests
 - [ ] Chapter 9: TDD and Threading
