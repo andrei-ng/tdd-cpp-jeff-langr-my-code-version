@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y \
  astyle clang-format \
  libjsoncpp1 libjsoncpp-dev \
  librlog-dev libboost1.58-all-dev \
+ libcurl4-openssl-dev \
  && add-apt-repository ppa:nholthaus/gtest-runner -y \
  && apt-get update && apt-get install gtest-runner libqt5opengl5 libqt5xml5 -y \
  && sudo locale-gen en_US.UTF-8 \
